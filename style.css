@@ -1,0 +1,650 @@
+/* Sideweaver — стили. Этап 2: панель настроек, окно, панель персонажей, пресеты. */
+
+:root {
+    --sdw-accent: var(--SmartThemeQuoteColor, #f472b6);
+    --sdw-border: var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+    --sdw-text: var(--SmartThemeBodyColor, #e2e2e2);
+    --sdw-radius: 8px;
+    --sdw-transition: 0.15s ease;
+}
+
+/* ==================== Панель настроек ==================== */
+
+.sdw-settings { padding: 4px 2px 8px; }
+
+.sdw-intro {
+    font-size: 0.82em;
+    opacity: 0.7;
+    margin: 0 0 10px;
+    line-height: 1.45;
+}
+
+.sdw-section { margin-top: 10px; }
+
+.sdw-label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    font-size: 0.85em;
+    opacity: 0.85;
+}
+
+.sdw-hint {
+    font-size: 0.72em;
+    opacity: 0.55;
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+.sdw-settings select.text_pole,
+.sdw-settings input.text_pole { width: 100%; }
+
+.sdw-settings input[type="checkbox"]:disabled + span { opacity: 0.45; }
+
+/* ==================== Окно ==================== */
+
+.sdw-window {
+    position: fixed;
+    z-index: 3000;
+    width: 360px;
+    max-width: calc(100vw - 16px);
+    display: flex;
+    flex-direction: column;
+    background: rgba(18, 18, 26, 0.94);
+    border: 1px solid color-mix(in srgb, var(--sdw-accent) 28%, var(--sdw-border));
+    border-radius: 14px;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    color: var(--sdw-text);
+    font-size: 0.9em;
+}
+
+.sdw-window[hidden] { display: none; }
+
+.sdw-window.sdw-dragging {
+    backdrop-filter: none;
+    user-select: none;
+}
+
+.sdw-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    cursor: grab;
+    border-bottom: 1px solid var(--sdw-border);
+}
+
+.sdw-dragging .sdw-head { cursor: grabbing; }
+
+.sdw-collapsed .sdw-head { border-bottom: none; }
+
+.sdw-title {
+    font-weight: 600;
+    color: var(--sdw-accent);
+    min-width: 32px;
+}
+
+.sdw-auto {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85em;
+    opacity: 0.85;
+    cursor: pointer;
+    margin: 0;
+}
+
+.sdw-auto input { margin: 0; }
+
+.sdw-head-btns {
+    margin-left: auto;
+    display: flex;
+    gap: 2px;
+}
+
+.sdw-icon {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all var(--sdw-transition);
+}
+
+.sdw-icon:hover { opacity: 1; background: rgba(255, 255, 255, 0.08); }
+.sdw-icon.active { opacity: 1; color: var(--sdw-accent); }
+
+.sdw-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.sdw-collapsed .sdw-body { display: none; }
+
+.sdw-view[hidden] { display: none; }
+
+.sdw-status {
+    font-size: 0.85em;
+    opacity: 0.75;
+    margin-bottom: 8px;
+    line-height: 1.45;
+}
+
+.sdw-link {
+    color: var(--sdw-accent);
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.sdw-prompt {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78em;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 8px 10px;
+    border-radius: var(--sdw-radius);
+    border: 1px solid var(--sdw-border);
+    background: rgba(0, 0, 0, 0.28);
+    user-select: text;
+}
+
+.sdw-prompt[hidden],
+.sdw-status[hidden],
+.sdw-meta[hidden] { display: none; }
+
+.sdw-meta {
+    font-size: 0.72em;
+    opacity: 0.55;
+    margin-top: 6px;
+}
+
+.sdw-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.sdw-btn {
+    flex: 1;
+    padding: 7px 10px;
+    font-size: 0.85em;
+    border-radius: var(--sdw-radius);
+    border: 1px solid var(--sdw-border);
+    background: transparent;
+    color: var(--sdw-text);
+    cursor: pointer;
+    transition: all var(--sdw-transition);
+}
+
+.sdw-btn:hover:not(:disabled) { border-color: var(--sdw-accent); }
+.sdw-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sdw-btn[hidden] { display: none; }
+
+.sdw-btn-small {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    font-size: 0.75em;
+}
+
+/* ==================== Панель персонажей ==================== */
+
+.sdw-tags-title {
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-bottom: 6px;
+}
+
+.sdw-char {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--sdw-border);
+}
+
+.sdw-char-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.sdw-char-name {
+    flex: 1;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+input.sdw-char-name-input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+textarea.sdw-char-tags {
+    width: 100%;
+    min-height: 54px;
+    resize: vertical;
+    font-size: 0.8em;
+    line-height: 1.45;
+    margin: 0;
+}
+
+#sdw_view_tags > .sdw-btn { width: 100%; margin-top: 10px; }
+
+/* ==================== Менеджер пресетов (из борда) ==================== */
+
+.sdw-popup-ov {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(6, 6, 10, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.sdw-popup {
+    width: min(880px, 100%);
+    max-height: 90dvh;
+    display: flex;
+    flex-direction: column;
+    background: rgba(18, 18, 26, 0.98);
+    border: 1px solid color-mix(in srgb, var(--sdw-accent) 28%, var(--sdw-border));
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    color: var(--sdw-text);
+}
+
+.sdw-popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px 8px;
+}
+
+.sdw-popup-title { font-size: 0.95em; font-weight: 600; }
+
+.sdw-popup-x {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.sdw-popup-x:hover { opacity: 1; background: rgba(255, 255, 255, 0.08); }
+
+.sdw-popup-btns {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    flex-wrap: wrap;
+}
+
+.sdw-pbtn {
+    flex: 1;
+    min-width: 96px;
+    padding: 9px 10px;
+    font-size: 0.82em;
+    border-radius: var(--sdw-radius);
+    border: 1px solid var(--sdw-border);
+    background: transparent;
+    color: var(--sdw-text);
+    cursor: pointer;
+    transition: all var(--sdw-transition);
+}
+
+.sdw-pbtn:hover:not(:disabled) { border-color: var(--sdw-accent); }
+.sdw-pbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.sdw-pbtn.primary {
+    background: var(--sdw-accent);
+    color: #0a0a0f;
+    border-color: var(--sdw-accent);
+    font-weight: 600;
+}
+
+.sdw-pbtn.ghost { flex: 0 0 auto; min-width: 90px; opacity: 0.75; }
+
+.sdw-warn {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: 0.76em;
+    line-height: 1.45;
+    border-radius: var(--sdw-radius);
+    background: color-mix(in srgb, #fbbf24 12%, transparent);
+    border: 1px solid color-mix(in srgb, #fbbf24 35%, transparent);
+    color: #fbbf24;
+}
+
+.sdw-field-label {
+    display: block;
+    font-size: 0.72em;
+    opacity: 0.55;
+    margin: 10px 0 4px;
+}
+
+.sdw-field-label:first-child { margin-top: 0; }
+
+.sdw-presets-cols {
+    display: flex;
+    gap: 12px;
+    padding: 0 14px;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.sdw-presets-side {
+    flex: 0 0 210px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+}
+
+.sdw-presets-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 90px;
+    border: 1px solid var(--sdw-border);
+    border-radius: var(--sdw-radius);
+    padding: 4px;
+}
+
+.sdw-preset-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 7px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.sdw-preset-item:hover { background: rgba(255, 255, 255, 0.06); }
+
+.sdw-preset-item.active {
+    background: color-mix(in srgb, var(--sdw-accent) 18%, transparent);
+    color: var(--sdw-accent);
+}
+
+.sdw-preset-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sdw-preset-tag { flex: 0 0 auto; font-size: 0.72em; opacity: 0.5; }
+
+.sdw-presets-side-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.sdw-presets-side-btns .sdw-pbtn {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 7px 6px;
+    font-size: 0.74em;
+}
+
+.sdw-presets-form {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-width: 0;
+    padding-right: 2px;
+}
+
+.sdw-presets-form input.text_pole,
+.sdw-presets-form textarea.text_pole { width: 100%; }
+
+.sdw-presets-form input.text_pole[disabled],
+.sdw-presets-form textarea.text_pole[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+textarea.sdw-ta-big {
+    min-height: 260px;
+    max-height: 50dvh;
+    resize: vertical;
+    font-size: 0.76em;
+    line-height: 1.5;
+}
+
+/* ==================== Джейлбрейк ==================== */
+
+.sdw-subsection {
+    margin-left: 4px;
+    padding-left: 10px;
+    border-left: 2px solid color-mix(in srgb, var(--sdw-accent) 35%, transparent);
+}
+
+.sdw-subsection[hidden] { display: none; }
+
+textarea.sdw-jb-text {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    font-size: 0.8em;
+    line-height: 1.45;
+}
+
+/* ==================== Ручная правка промпта ==================== */
+
+textarea.sdw-prompt-edit {
+    width: 100%;
+    min-height: 180px;
+    max-height: 45vh;
+    resize: vertical;
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78em;
+    line-height: 1.5;
+}
+
+textarea.sdw-prompt-edit[hidden],
+.sdw-actions[hidden] { display: none; }
+
+/* ==================== Этап 3: картинка, стиль, наистера ==================== */
+
+.sdw-image-wrap {
+    margin-bottom: 8px;
+    border-radius: var(--sdw-radius);
+    overflow: hidden;
+    border: 1px solid var(--sdw-border);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.sdw-image-wrap[hidden] { display: none; }
+
+.sdw-image {
+    display: block;
+    width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+    cursor: zoom-in;
+}
+
+.sdw-prompt-toggle {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.7;
+    font-size: 0.82em;
+    padding: 4px 2px;
+    cursor: pointer;
+}
+
+.sdw-prompt-toggle:hover { opacity: 1; color: var(--sdw-accent); }
+.sdw-prompt-toggle[hidden],
+.sdw-prompt-block[hidden],
+.sdw-style-row[hidden] { display: none; }
+
+.sdw-prompt-block .sdw-actions { justify-content: flex-end; margin-top: 6px; }
+
+.sdw-style-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.sdw-style-label {
+    font-size: 0.8em;
+    opacity: 0.7;
+    margin: 0;
+}
+
+select.sdw-style-select {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 0.85em;
+}
+
+.sdw-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    background: rgba(6, 6, 10, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: zoom-out;
+}
+
+.sdw-lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Настройки: группы, рамки, стили */
+
+.sdw-group-title {
+    margin-top: 18px;
+    padding-top: 10px;
+    border-top: 1px solid var(--sdw-border);
+    font-weight: 600;
+    font-size: 0.9em;
+    color: var(--sdw-accent);
+}
+
+.sdw-aspect-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 4px 10px;
+    font-size: 0.85em;
+}
+
+.sdw-aspect-grid select { margin: 0; }
+
+.sdw-styles-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.sdw-style-item {
+    border: 1px solid var(--sdw-border);
+    border-radius: var(--sdw-radius);
+    padding: 4px 8px;
+}
+
+.sdw-style-item summary {
+    cursor: pointer;
+    font-size: 0.85em;
+    padding: 3px 0;
+}
+
+.sdw-style-body { padding: 6px 0 4px; }
+
+.sdw-style-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.sdw-style-top input { flex: 1; min-width: 0; margin: 0; }
+
+.sdw-style-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+/* Импорт стилей */
+
+.sdw-import { width: min(480px, 100%); }
+
+.sdw-import-list {
+    padding: 0 14px;
+    overflow-y: auto;
+    max-height: 60dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sdw-import-item {
+    padding: 5px 6px;
+    border-radius: 6px;
+    font-size: 0.85em;
+}
+
+.sdw-import-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+/* ==================== Кнопка вызова (как у DS Comments) ==================== */
+
+@keyframes sdw-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+}
+
+.sdw-launcher { opacity: 0.6; }
+.sdw-launcher.sdw-launcher-active { opacity: 1; }
+.sdw-launcher.sdw-busy,
+.sdw-fab.sdw-busy { animation: sdw-pulse 1.4s ease-in-out infinite; will-change: transform; }
+
+.sdw-fab {
+    position: fixed;
+    z-index: 2999;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+    touch-action: none;
+    background: rgba(18, 18, 26, 0.92);
+    border: 1px solid var(--sdw-border);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    opacity: 0.7;
+    transition: opacity var(--sdw-transition), border-color var(--sdw-transition);
+}
+
+.sdw-fab:hover { opacity: 1; }
+.sdw-fab.sdw-launcher-active { opacity: 1; border-color: var(--sdw-accent); }
+.sdw-fab[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .sdw-launcher.sdw-busy,
+    .sdw-fab.sdw-busy { animation: none; opacity: 0.8; will-change: auto; }
+}
