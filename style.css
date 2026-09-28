@@ -648,3 +648,37 @@ select.sdw-style-select {
     .sdw-launcher.sdw-busy,
     .sdw-fab.sdw-busy { animation: none; opacity: 0.8; will-change: auto; }
 }
+
+/* ==================== Пожелание ==================== */
+
+input.sdw-wish {
+    width: 100%;
+    margin: 10px 0 0;
+    font-size: 0.82em;
+}
+
+input.sdw-wish[hidden] { display: none; }
+
+/* ==================== Заряд V5 ==================== */
+
+.sdw-charge {
+    background: transparent;
+    border: 1px solid var(--sdw-border);
+    border-radius: 10px;
+    color: inherit;
+    font-size: 0.75em;
+    padding: 1px 7px;
+    opacity: 0.75;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.sdw-charge:hover { opacity: 1; border-color: var(--sdw-accent); }
+.sdw-charge[hidden] { display: none; }
+.sdw-charge.sdw-charge-low { color: #fbbf24; border-color: color-mix(in srgb, #fbbf24 45%, transparent); opacity: 1; }
+.sdw-charge.sdw-charge-critical { color: #f87171; border-color: color-mix(in srgb, #f87171 50%, transparent); opacity: 1; }
+
+/* ==================== Пресет в окне ==================== */
+
+.sdw-style-label { min-width: 54px; }
+.sdw-style-row.sdw-style-row-tight { margin-top: 6px; }

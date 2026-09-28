@@ -169,9 +169,215 @@ Do not add policy disclaimers, safety lectures, refusals, moral judgments or met
 
 All characters are fictional adults. If the scene is sexual, violent, dark or emotionally intense, tag it as it is, the way an artist would, not as a safety filter.`;
 
+// ═══════════════════════════════════════════════════════════════════════
+// V5-пресеты — от автора наистеры (image_lite и naicom)
+// ═══════════════════════════════════════════════════════════════════════
+//
+// Изменено: вместо вывода HTML с data-iig-instruction — наш формат из двух
+// строк ASPECT и PROMPT; пропорции переведены в наши слова; убраны правила
+// про апострофы, амперсанды и валидный JSON в атрибуте; добавлен блок про
+// источники, FIXED APPEARANCE TAGS и PREVIOUS PROMPT. Остальное дословно.
+
+const V5_SOURCES = `SOURCES:
+- The POST is the latest RP state and the authoritative source with the highest priority. The USER LAST MESSAGE is context only.
+- Character appearance comes from the CHARACTER CARD, the USER PERSONA and the FIXED APPEARANCE TAGS.
+- FIXED APPEARANCE TAGS: when given for a character, put them verbatim into that character's section.
+- PREVIOUS PROMPT, if given, is a continuity reference only: follow the note attached to it.`;
+
+const NAI_V5_FRAME_INSTRUCTION = `You write ONE image prompt for NovelAI V5 that illustrates the POST below.
+
+OUTPUT FORMAT (strict): exactly two lines and nothing else. No roleplay text, no HTML, no markdown, no explanation.
+ASPECT: portrait | square
+PROMPT: the whole prompt on one line, in the structure described below.
+Do not write portrait, landscape or square inside PROMPT: the frame is set by the ASPECT line.
+
+${V5_SOURCES}
+
+Rules:
+- "PROMPT" must be one continuous line.
+- Mix Danbooru tags with natural language.
+- Use "#" only for Action Tags: source#, target#, mutual#.
+
+Scene:
+
+- Treat the latest RP state as the authoritative source with the highest priority.
+- Generate a single visual snapshot of the current moment.
+- Do not summarize previous actions.
+- Do not invent new actions, poses, facial expressions, objects, or scenery.
+- Preserve only what is visually important.
+
+Style isolation:
+
+- You may describe only:
+  subject count, identity, appearance, clothing, poses, interactions, facial expressions, gaze direction, essential objects, essential location, factual time of day/weather when relevant, and neutral framing.
+- Never add artists, quality tags, aesthetic tags, artistic technique or medium descriptors, rendering terms, lineart terms, lighting styles, atmosphere, palette, textures, or any other style-driving terms.
+
+Multi-character structure:
+
+- Use: "[base prompt] | [character 1] | [character 2] ..."
+- Put subject counts only in the base prompt.
+- The base prompt must contain only shared scene information, background information, and neutral framing.
+- Each visible character gets one self-contained prompt block beginning with "boy", "girl", or "other".
+- Keep each character's appearance, clothing, action, facial expression, and gaze direction inside that character's own block.
+- Do not duplicate character details in the base prompt.
+- Never use descriptions that could make the characters appear to be children, such as "petite", "small", etc.
+
+Identity:
+
+- For characters from existing franchises, put the identity immediately after the gender, for example: Naruto Uzumaki (naruto), Phainon (honkai star rail), etc.
+
+Interaction:
+
+- Describe each interaction once and as clearly as possible.
+- For complex physical contact, prioritize:
+  1. relative position,
+  2. contact point,
+  3. the corresponding Action Tag pair.
+- If necessary, add one short natural-language sentence to further reinforce the interaction.
+- Action Tags go inside the character sections, written literally as "source#", "target#" or "mutual#", never with names:
+  one character gets "source#hug", the other gets "target#hug" (the same action word on both sides);
+  for a shared action both get "mutual#kiss".
+- Action Tags are only for physical contact. Offering an object, gestures without touch, and gaze need no Action Tags: describe them in plain words inside the character section.
+- Do not deliberate over Action Tags: if unsure, skip them and describe the interaction in one short sentence.
+- Never restate the same action using several synonymous formulations.
+- Avoid possessive body-part constructions involving character names. Prefer "hands on shoulders", "hands on another's shoulders", or "both hands resting on the other boy's shoulders".
+
+NSFW:
+
+- Use explicit, clinical Danbooru terminology; absolutely no metaphors, romantic abstractions, or emotional embellishment.
+- State the exact sexual act using appropriate tags: missionary, doggystyle, cowgirl position, oral, fellatio, cunnilingus, anal, vaginal, fingering, handjob, penetration, etc.
+- Always specify state and fluids when present: erect penis, flaccid, cum, precum, covered in cum, sweating, heavy breathing, flushed face, saliva trail, etc.
+- Explicitly map body contact points: "penis in vagina", "penis in mouth", "penis rubbing against ass", "hand on penis", etc.
+- Add ratings/tags to the base prompt: "nsfw, explicit, uncensored, sex".
+- During sex, describe the state of clothing with mechanical precision: naked, partially undressed, clothes pulled down, shirt lifted, bottomless.
+
+Composition:
+
+- Use the tightest neutral framing that preserves the important poses and physical contact.
+- Do not use full body.
+- Prefer close-up, upper body, cowboy shot, and other medium/close framings when the interaction is centered on faces, hands, or upper-body contact.
+
+Expressions:
+
+- Facial expressions must stay readable and natural. Describe eyes only by color and gaze direction; never describe pupils, eye rims or eye glow. Avoid feral, crazed or distorted faces unless the POST makes that expression the point of the scene.
+
+Gaze:
+
+- Never use "looking at viewer", "facing viewer", "looking at camera", or similar phrases.
+- For every visible character, assign an in-scene gaze direction: looking at another, looking up at another, looking down at another, looking aside, looking away, looking at object, eyes closed, etc.
+
+Text rendering:
+
+- Add text only if readable dialogue or visible text is genuinely important.
+- If dialogue is used, add "text, speech bubble" to the base prompt.
+- Use "Text:" exactly once and strictly at the absolute end of the prompt.
+- After "Text:", include only the exact words that should be visible.
+- If text is unnecessary, do not add text tags.
+
+Aspect ratio:
+
+- Use only portrait or square in the ASPECT line.`;
+
+const NAI_V5_COMIC_INSTRUCTION = `Create a prompt for ONE comic page. Return only the two lines described in OUTPUT FORMAT. Describe the scene in English, while keeping the selected dialogue in its original Russian.
+
+OUTPUT FORMAT (strict): exactly two lines and nothing else. No roleplay text, no HTML, no markdown, no explanation.
+ASPECT: portrait | landscape | square
+PROMPT: the whole prompt on one line, in the structure described below.
+Do not write portrait, landscape or square inside PROMPT: the frame is set by the ASPECT line.
+
+${V5_SOURCES}
+
+SOURCE AND CONTINUITY
+
+Use the latest established RP moment. Profiles define appearance; the current RP defines actions, expressions, clothing, and the current state of that clothing. Preserve everything that is still valid within scene continuity.
+
+ONE INPUT FIELD, SEPARATE CHARACTER SECTIONS
+
+Write the generated prompt on ONE line. Separate the base scene from individual character sections with a plain vertical bar "|", surrounded by spaces. Structure: base scene and all panel descriptions | first character | second character. Each character section must contain that character's identity, visible appearance, current clothing, and panel-specific actions together. Use one section for each distinct visible character, including all repeat appearances of that same character within the same section. Panel descriptions remain in the base section; they do not create additional character sections.
+
+Use ordinary text, punctuation, and spaces. The prompt string must contain no backslashes, line breaks, tabs, control characters, escape sequences, or technical serialization instructions. Return only the two output lines.
+
+BASE: PAGE AND ACTION
+
+Start with the gender counts for the distinct visible cast, followed by "comic" and the panel count. Add a brief factual description of the setting. Then describe the page layout and all panels in ordinary sentences. Names identify the cast here; full appearance and clothing descriptions belong in the individual character sections.
+
+Use ONE dominant "Main frame" and 1–3 smaller "Focus frame" panels. The "Main frame" occupies roughly two thirds of the page. "Focus frame" panels are compact insets or small adjacent panels, not an equal grid. Use narrow gutters and scene-filled outer edges. State the position of every panel clearly and consistently. Focus frames may contain chibi versions of characters doing something, interacting, reacting, or expressing the character's current mood.
+
+For conversation and close interaction, the "Main frame" should be a tight chest-up two-shot, cropped around the chest or upper torso. Faces and the relevant interaction should fill most of the frame. With three or more participants, place additional speakers into separate close-up "Focus frame" panels rather than widening the "Main frame". Show close-ups of faces, expressions, hands, or already established physical contact. Choose every crop for its purpose; if an important action involves the lower body, use a localized detail panel for that action.
+
+Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
+
+A chibi reaction gag is welcome when it fits the already established mood. Localize it to ONE small "Focus frame" and to the named character only, preferably as a chibi face or bust. The "Main frame" must retain normal proportions. Do not add global chibi tags to the base scene or identity descriptions.
+
+Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
+
+Characters must behave visually as though no viewer, camera, photographer, or audience exists. They live inside the scene and must direct their attention only toward another character, an object, an event, or another meaningful point within the scene. Never describe a character as looking at the viewer, looking into the camera, facing the audience, making eye contact with the viewer, posing for the camera, acknowledging the camera, or breaking the fourth wall unless the RP explicitly establishes that exact behavior. Do not use viewer-facing eye contact as a neutral default. Even when a face is shown frontally, the eyes must still be directed toward an in-scene person or object rather than outward toward the viewer. For every visible character, give a scene-internal gaze target whenever practical. Treat the viewer as completely nonexistent from the characters' perspective.
+
+CHARACTER SECTIONS: IDENTITY AND CLOTHING
+
+After all base descriptions, append the character sections. Order them by first appearance in page reading order. Start each section with "boy", "girl", or "other" without a number, followed by the character identity. Keep that character's appearance, visible clothing, expression, and panel-specific placement or action inside THIS section. Never place several different people inside one character section. A partner's name may be used to identify an interaction, but do not import the partner's appearance or clothing into that section.
+
+For a fandom character, use the recognized character tag when confidently known and the source or series tag, followed by a compact set of identifying visual traits and CURRENT visible clothing. If the exact tag is unknown, use the full canonical name and source title in clear English rather than inventing a tag spelling. A canonical name is an identity anchor, not a reason to erase the established RP outfit or change the external drawing style.
+
+For an original character, the name is only a reference label. Explicitly describe sex or presentation, face, eyes, hair, distinctive anatomy, and current visible clothing. Do not assume the model knows the name or can see profile images. Do not assign an OC a fandom character tag merely because they look similar.
+
+For every character, describe the identifying details that are actually visible across the selected panels. Repeat compact identity information on EVERY newly generated page. Within one page, use the same name and stable attributes across both normal and chibi appearances. Do not borrow another character's palette, hairstyle, accessories, or clothing motifs. Express required features positively rather than listing another character's unwanted features in the positive prompt.
+
+ACTION TAGS
+
+- Action Tags go inside the character sections, written literally as "source#", "target#" or "mutual#", never with names:
+  one character gets "source#hug", the other gets "target#hug" (the same action word on both sides);
+  for a shared action both get "mutual#kiss".
+- Action Tags are only for physical contact. Offering an object, gestures without touch, and gaze need no Action Tags: describe them in plain words inside the character section.
+- Do not deliberate over Action Tags: if unsure, skip them and describe the interaction in one short sentence.
+
+After identity and clothing, briefly state which "Main frame" or "Focus frame" panels show that character, together with the relevant position, expression, gaze target, and action. This reinforces panel ownership without reprinting the entire layout. A repeated appearance of the same character does not create another identity section.
+
+Every character section must preserve the same scene-internal gaze logic as the base description. Characters must not look toward the viewer or camera. Their eyes and attention must remain anchored to another character, an object, or an event within the scene, as if no external observer exists.
+
+EXPRESSIONS
+
+Facial expressions must stay readable and natural. Describe eyes only by color and gaze direction; never describe pupils, eye rims or eye glow. Avoid feral, crazed or distorted faces unless the POST makes that expression the point of the scene.
+
+DIALOGUE AND TEXT
+
+Use no more than three short verbatim Russian lines already spoken in the current moment, with no more than one speech bubble per speaker. Preserve profanity. Select a complete short line or a self-contained excerpt rather than inventing or paraphrasing dialogue. A silent panel needs no text. Speech bubbles must not cover faces or identifying features.
+
+In the base panel description, name the visible speaker, identify the speech bubble and its tail, and place the exact printed line inside Russian guillemets: "NAME has a speech bubble saying «Реплика», with the tail pointing to NAME." Thoughts are allowed only when established internal speech exists and must use a thought bubble.
+
+At the very end of that speaker's OWN character section, add "Text:" followed by the same single line without quotation marks. Nothing else may follow it inside that character section. The next character begins after the plain vertical bar "|". Silent characters have no "Text:" entry. Do not add a global transcription, a second copy of the same bubble, or instructions for separating multiple lines. All content stays on one line with ordinary spaces. Keep each dialogue line to no more than 8 words.
+
+NSFW AND EXPLICIT ADULT SEXUAL CONTENT
+
+- Apply this section only when the established RP moment explicitly contains sexual activity. Do not infer sexual activity merely from romance, nudity, or physical closeness.
+- Preserve the already established level of explicitness. Do not sanitize an established sexual act and do not escalate beyond what is already occurring.
+- Use direct clinical Danbooru terminology. Do not use metaphors, romantic abstractions, euphemisms, poetic phrasing, or emotional embellishment in sexual descriptions.
+- When applicable, state the exact established sexual act using standard terms: "missionary", "doggystyle", "cowgirl position", "oral", "fellatio", "cunnilingus", "anal", "vaginal", "fingering", "handjob", "penetration".
+- Specify visible anatomical state and fluids whenever already established and visible: "erect penis", "flaccid penis", "cum", "precum", "covered in cum", "sweating", "heavy breathing", "flushed face", "saliva trail".
+- Map sexual contact precisely with named participants and exact body contact. Examples of the required precision include: "penis in vagina", "penis in mouth", "penis rubbing against ass", "hand on penis". Use only the contact already established in the RP.
+- Describe clothing state mechanically and precisely for every relevant participant: "naked", "partially undressed", "clothes pulled down", "shirt lifted", "bottomless", or another directly established state.
+- Keep anatomy, clothing state, pose, penetration, and contact ownership inside the relevant named "Main frame" or "Focus frame" description.
+- Use a dedicated close-up "Focus frame" when an established sexual contact point would otherwise be too small or ambiguous.
+- When established sexual activity contains internal penetration that would otherwise be visually hidden, the page MUST include a localized "x-ray" "Focus frame".
+- Use "x-ray" only to clarify already established penetration. Never use it to invent hidden sexual activity.
+- Bind the "x-ray" explicitly to the named participants and the exact already established penetration.
+- Keep "x-ray" localized to the relevant "Focus frame". Do not turn the whole page into an anatomical diagram.
+- Never use "x-ray" for non-penetrative activity.
+- Preserve established anatomy, fluids, clothing displacement, penetration, and contact consistently between the main frame and the close-up.
+- Explicit scenes do not automatically become POV. The viewer still does not exist from the characters' perspective. Characters must not look toward the viewer, camera, or imagined audience during explicit scenes unless such behavior is explicitly established in the RP itself.
+- Dialogue rules remain unchanged in explicit scenes.
+
+EXTERNAL STYLE
+
+Do not provide artists, years, quality tags, linework or rendering instructions, or a palette. The separately configured style controls all panels. Use only brief factual lighting when relevant. Comic layout and localized chibi proportions are content and composition instructions.
+
+Do not insert technical escape syntax into the prompt. Output no Markdown, explanations, or placeholder labels.
+
+Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; chibi is limited to its own panel; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
+
 // Версия встроенных пресетов. Растёт, когда меняется текст встроенных
 // шаблонов: у тебя настройки уже сохранены, и без этого остался бы старый текст.
-const SEED_VERSION = 4;
+const SEED_VERSION = 7;
 
 // Встроенные пресеты прошлых версий. При обновлении убираются, если их
 // не правили (правленые копии — уже не встроенные и остаются).
@@ -205,11 +411,19 @@ const defaultSettings = Object.freeze({
     // Место плавающей кнопки. null — по умолчанию.
     fabPosition: null,
 
+    // Кто рисует: 'naistera' или 'novelai' (подписка напрямую).
+    provider: 'naistera',
+    // NovelAI напрямую: persistent API token (pst-…) и модель.
+    naiKey: '',
+    naiModel: 'nai-diffusion-5-full',
+
     // NovelAI через наистеру.
     naisteraKey: '',
     // Пусто — https://naistera.org
     naisteraEndpoint: '',
     negativePrompt: '',
+    // Куски промпта с этими словами вырезаются перед отправкой в генерацию.
+    stopWords: 'feral, dilated pupils, constricted pupils, crazy eyes, gold-rimmed, bloodshot',
     // Какая пропорция уходит в наистеру для каждой рамки.
     aspectMap: { landscape: '16:9', portrait: '2:3', square: '1:1' },
     // Если модель рамку не выбрала.
@@ -227,6 +441,8 @@ const defaultSettings = Object.freeze({
     debug: false,
     presets: [
         { id: 'nai', name: 'NovelAI', builtIn: true, instruction: NAI_INSTRUCTION },
+        { id: 'nai-v5-frame', name: 'V5 — кадр', builtIn: true, instruction: NAI_V5_FRAME_INSTRUCTION },
+        { id: 'nai-v5-comic', name: 'V5 — комикс', builtIn: true, instruction: NAI_V5_COMIC_INSTRUCTION },
     ],
 });
 
@@ -594,11 +810,22 @@ function getFixedTagLines() {
     return lines;
 }
 
+/** Промпт Sideweaver у предыдущего ответа модели — для непрерывности. */
+function getPreviousPrompt(messageId) {
+    const chat = getContext().chat || [];
+    for (let i = messageId - 1; i >= 0; i--) {
+        const message = chat[i];
+        if (!message || message.is_user || message.is_system) continue;
+        return String(readSwipeData(message)?.prompt || '').trim();
+    }
+    return '';
+}
+
 function substitute(text) {
     try { return getContext().substituteParams(text); } catch (_) { return text; }
 }
 
-function buildPromptContext(messageId) {
+function buildPromptContext(messageId, wish = '') {
     const context = getContext();
     const message = context.chat?.[messageId];
     const card = substitute(getCharacterCard());
@@ -607,13 +834,27 @@ function buildPromptContext(messageId) {
     const post = substitute(cleanMessageText(message?.mes, MAX_POST_CHARS));
     const fixed = getFixedTagLines();
 
+    const previousPrompt = getPreviousPrompt(messageId);
+
     const sections = [];
     if (card) sections.push(`CHARACTER CARD:\n${card}`);
     if (persona) sections.push(`USER PERSONA (${context.name1}):\n${persona}`);
+    if (previousPrompt) {
+        sections.push(`PREVIOUS PROMPT (continuity reference only):
+Use it ONLY to keep clothing, location and character appearance consistent.
+Do NOT copy its composition, framing, camera angle, pose or panel layout.
+Choose these fresh from the current POST.
+${previousPrompt}`);
+    }
     if (fixed.length) {
         sections.push(`FIXED APPEARANCE TAGS (include verbatim in this character block):\n${fixed.join('\n')}`);
     }
     if (userMessage) sections.push(`USER LAST MESSAGE (context only):\n${userMessage}`);
+    if (wish) {
+        sections.push(`USER WISH (highest priority for framing, camera angle, pose and expressions):
+${wish}
+Follow it even if the POST suggests otherwise. It never overrides character appearance, gender lock, anatomy or the output format.`);
+    }
     sections.push(`POST:\n${post}`);
     return sections.join('\n\n');
 }
@@ -649,7 +890,9 @@ async function requestModel(instruction, contextText, signal) {
         if (prefill) messages.push({ role: 'assistant', content: prefill });
         // includePreset: false — ролевой пресет профиля притащил бы в
         // служебный запрос свой системный промпт и джейлбрейк.
-        const overridePayload = {};
+        // Служебным запросам интернет не нужен: без этого Claude при включённом
+        // где-то поиске может уйти гуглить и вернуть пустой ответ (tool_use).
+        const overridePayload = { enable_web_search: false };
         if (settings.reasoningEffort && settings.reasoningEffort !== 'auto') {
             overridePayload.reasoning_effort = settings.reasoningEffort;
         }
@@ -738,7 +981,8 @@ function parsePromptOutput(raw) {
  * свайпа отменяет прошлый запрос. Результат ложится в свой свайп по
  * отпечатку, даже если ты успела свайпнуть или удалить сообщение выше.
  */
-async function runPrompt(messageId) {
+async function runPrompt(messageId, { wish = '' } = {}) {
+    wish = String(wish || '').trim();
     const target = makeTarget(messageId);
     if (!target) {
         sdwLog('WARN', `#${messageId}: не нашла свайп, пропуск`);
@@ -763,7 +1007,7 @@ async function runPrompt(messageId) {
     let failure = null;
     try {
         const instruction = substitute(preset.instruction || '');
-        const contextText = buildPromptContext(messageId);
+        const contextText = buildPromptContext(messageId, wish);
         sdwLog('INFO', `#${messageId}: запрос, пресет «${preset.name}»`, { instruction, contextText });
         raw = await requestModel(instruction, contextText, job.controller.signal);
     } catch (error) {
@@ -801,6 +1045,7 @@ async function runPrompt(messageId) {
         aspect,
         presetName: preset.name,
         promptAt: Date.now(),
+        wish,
         edited: false,
         error: null,
     });
@@ -930,6 +1175,31 @@ function composeFinalPrompt(prompt, style) {
     return rest.length ? `${styleTags}, ${rest.join(', ')}` : styleTags;
 }
 
+// ─── Стоп-слова ──────────────────────────────────────────────────────────
+
+function getStopWordPatterns() {
+    return String(getSettings().stopWords || '')
+        .split(',')
+        .map(w => w.trim())
+        .filter(Boolean)
+        .map(w => new RegExp(`(^|[^\\p{L}\\p{N}])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=$|[^\\p{L}\\p{N}])`, 'iu'));
+}
+
+/**
+ * Выкидывает из раздела промпта куски (между запятыми), где есть стоп-слово.
+ * @returns {{ text: string, removed: string[] }}
+ */
+function applyStopWords(section, patterns) {
+    if (!patterns.length) return { text: section, removed: [] };
+    const removed = [];
+    const kept = String(section || '').split(',').filter((chunk) => {
+        const hit = patterns.some(re => re.test(chunk));
+        if (hit) removed.push(chunk.trim());
+        return !hit;
+    });
+    return { text: kept.map(c => c.trim()).filter(Boolean).join(', '), removed };
+}
+
 function pickAspect(modelAspect) {
     const settings = getSettings();
     if (settings.randomAspect) return ASPECTS[Math.floor(Math.random() * ASPECTS.length)];
@@ -1045,8 +1315,13 @@ async function uploadImage(dataUrl, folder) {
 async function runDraw(target) {
     if (!target) return;
     const settings = getSettings();
-    if (!String(settings.naisteraKey || '').trim()) {
+    const provider = settings.provider === 'novelai' ? 'novelai' : 'naistera';
+    if (provider === 'naistera' && !String(settings.naisteraKey || '').trim()) {
         toastr.warning('Не задан ключ наистеры', TOAST_TITLE, { timeOut: 3500 });
+        return;
+    }
+    if (provider === 'novelai' && !String(settings.naiKey || '').trim()) {
+        toastr.warning('Не задан ключ NovelAI', TOAST_TITLE, { timeOut: 3500 });
         return;
     }
 
@@ -1068,23 +1343,55 @@ async function runDraw(target) {
 
     const style = getActiveStyle();
     const aspect = pickAspect(data.aspect);
-    const ratio = settings.aspectMap[aspect] || defaultSettings.aspectMap[aspect];
-    const finalPrompt = composeFinalPrompt(data.prompt, style);
     const folder = getUploadFolderName();
+    const negative = String(settings.negativePrompt || '').trim();
+
+    // Стиль и дедупликация — только к основе; разделы персонажей идут как есть.
+    const rawSections = splitPromptSections(data.prompt);
+    const patterns = getStopWordPatterns();
+    const stopped = [];
+    const cleanBase = applyStopWords(rawSections.base, patterns);
+    stopped.push(...cleanBase.removed);
+    const sections = {
+        base: cleanBase.text,
+        chars: rawSections.chars.map((c) => {
+            const r = applyStopWords(c, patterns);
+            stopped.push(...r.removed);
+            return r.text;
+        }).filter(Boolean),
+    };
+    if (stopped.length) sdwLog('INFO', 'Вырезано стоп-словами:', stopped);
+    const base = composeFinalPrompt(sections.base, style);
+    const finalPrompt = [base, ...sections.chars].join(' | ');
+
+    const naiModel = NAI_MODELS.some(m => m.id === settings.naiModel) ? settings.naiModel : NAI_MODELS[0].id;
+    const naiSize = NAI_SIZES[aspect] || NAI_SIZES.landscape;
+    const seed = Math.floor(Math.random() * 4294967295);
+    const ratio = provider === 'novelai'
+        ? `${naiSize.width}×${naiSize.height}`
+        : (settings.aspectMap[aspect] || defaultSettings.aspectMap[aspect]);
 
     const body = { prompt: finalPrompt, aspect_ratio: ratio, model: NAISTERA_MODEL };
-    const negative = String(settings.negativePrompt || '').trim();
     if (negative) body.negative_prompt = negative;
 
     await writeSwipeData(target, { drawStatus: 'drawing', drawError: null, drawStartedAt: Date.now() });
     toastr.info('Рисую в NovelAI…', TOAST_TITLE, { timeOut: 2000 });
-    sdwLog('INFO', `Рисую #${target.messageId}: рамка ${aspect} (${ratio}), стиль «${style?.name || 'нет'}»`, finalPrompt);
+    sdwLog('INFO', `Рисую #${target.messageId} (${provider}): рамка ${aspect} (${ratio}), стиль «${style?.name || 'нет'}»`, finalPrompt);
 
     let path = null;
     let failure = null;
+    let route = 'naistera';
     try {
         let imageUrl = null;
-        for (let attempt = 0; ; attempt++) {
+        if (provider === 'novelai') {
+            const result = await requestNovelAi({
+                base, chars: sections.chars, negative, model: naiModel,
+                width: naiSize.width, height: naiSize.height, seed,
+            }, job.controller.signal);
+            imageUrl = result.dataUrl;
+            route = result.route;
+        }
+        for (let attempt = 0; provider === 'naistera'; attempt++) {
             try {
                 imageUrl = await requestNaistera(body, job.controller.signal);
                 break;
@@ -1115,11 +1422,12 @@ async function runDraw(target) {
         sdwLog('WARN', `Рисование #${target.messageId} упало:`, failure);
         const text = String(failure?.message || failure);
         if (getCurrentChatId() === target.chatId) {
-            await writeSwipeData(target, { drawStatus: 'error', drawError: text });
+            await writeSwipeData(target, { drawStatus: 'error', drawError: text, drawProvider: provider });
         } else {
             renderWindow();
         }
-        toastr.error(`Наистера не ответила (${text.slice(0, 120)}). Промпт сохранён, жми 🎨`, TOAST_TITLE, { timeOut: 7000 });
+        const who = provider === 'novelai' ? 'NovelAI не ответил' : 'Наистера не ответила';
+        toastr.error(`${who} (${text.slice(0, 120)}). Промпт сохранён, жми 🎨`, TOAST_TITLE, { timeOut: 7000 });
         return;
     }
 
@@ -1129,8 +1437,15 @@ async function runDraw(target) {
         styleName: style?.name || '',
         aspect,
         ratio,
+        provider,
+        model: provider === 'novelai' ? naiModel : NAISTERA_MODEL,
+        route,
+        seed: provider === 'novelai' ? seed : null,
+        stopCut: stopped.length,
         createdAt: Date.now(),
     };
+
+    if (provider === 'novelai') refreshNaiCharge();
 
     if (getCurrentChatId() !== target.chatId) {
         getSettings().mailbox.push({ chatId: target.chatId, key: target.key, messageId: target.messageId, image });
@@ -1182,6 +1497,294 @@ async function deliverMailbox() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// NovelAI напрямую (подписка)
+// ═══════════════════════════════════════════════════════════════════════
+//
+// Запрос собран по замерам на image.novelai.net: V5 требует v4_prompt и
+// v4_negative_prompt (без них сервер отвечает 500), ответ — zip с PNG.
+// Бесплатно на Opus: одна картинка, не больше 1024×1024 по площади, до 28 шагов.
+
+const NAI_HOST = 'https://image.novelai.net';
+const NAI_MODELS = [
+    { id: 'nai-diffusion-5-full', label: 'V5 Full' },
+    { id: 'nai-diffusion-5-curated', label: 'V5 Curated' },
+    { id: 'nai-diffusion-4-5-full', label: 'V4.5 Full' },
+];
+// Только бесплатные размеры Opus.
+const NAI_SIZES = {
+    landscape: { width: 1216, height: 832 },
+    portrait: { width: 832, height: 1216 },
+    square: { width: 1024, height: 1024 },
+};
+const NAI_TIERS = ['Paper', 'Tablet', 'Scroll', 'Opus'];
+
+// Заблокировал ли браузер прямые запросы (CORS). Помним до перезагрузки.
+let naiDirectBlocked = false;
+
+// Заряд V5 на Opus в процентах; null — неизвестен, значок спрятан.
+let naiCharge = null;
+
+/** Показывать ли значок заряда: только NovelAI, с ключом и моделью V5. */
+function shouldShowCharge() {
+    const settings = getSettings();
+    return settings.provider === 'novelai'
+        && !!String(settings.naiKey || '').trim()
+        && String(settings.naiModel || '').startsWith('nai-diffusion-5');
+}
+
+/** Тихо запрашивает заряд. Ошибки не показываем — значок просто прячется. */
+async function refreshNaiCharge() {
+    if (!shouldShowCharge() || naiDirectBlocked) {
+        naiCharge = null;
+        renderCharge();
+        return;
+    }
+    try {
+        const response = await fetch(`${NAI_HOST}/user/subscription`, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${String(getSettings().naiKey || '').trim()}` },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        naiCharge = Number.isFinite(data?.usage?.percent) ? data.usage.percent : null;
+    } catch (error) {
+        sdwLog('INFO', 'Заряд V5 не получен:', error?.message);
+        naiCharge = null;
+    }
+    renderCharge();
+}
+
+function renderCharge() {
+    const el = document.getElementById('sdw_charge');
+    if (!el) return;
+    const visible = shouldShowCharge() && naiCharge !== null;
+    el.hidden = !visible;
+    if (!visible) return;
+    el.textContent = `🔋 ${naiCharge}%`;
+    el.classList.toggle('sdw-charge-low', naiCharge < 20 && naiCharge >= 5);
+    el.classList.toggle('sdw-charge-critical', naiCharge < 5);
+}
+
+function getNaiModelLabel(id) {
+    return NAI_MODELS.find(m => m.id === id)?.label || id;
+}
+
+/** «база | персонаж | персонаж» → { base, chars }. */
+function splitPromptSections(prompt) {
+    const parts = String(prompt || '').split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean);
+    return { base: parts[0] || '', chars: parts.slice(1) };
+}
+
+/** Проверка ключа: данные подписки, генерацию не тратит. */
+async function checkNovelAiKey() {
+    const key = String(getSettings().naiKey || '').trim();
+    if (!key) {
+        toastr.warning('Не задан ключ NovelAI', TOAST_TITLE, { timeOut: 3000 });
+        return;
+    }
+    let response;
+    try {
+        response = await fetch(`${NAI_HOST}/user/subscription`, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${key}` },
+        });
+    } catch (error) {
+        sdwLog('WARN', 'NovelAI из браузера недоступен:', error);
+        naiDirectBlocked = true;
+        toastr.warning('NovelAI не пускает запросы из браузера — буду рисовать через таверну, без раздельных персонажей. Положи ключ ещё и в Подключения к API → NovelAI', TOAST_TITLE, { timeOut: 9000 });
+        return;
+    }
+    if (response.status === 401) {
+        toastr.error('Ключ не подошёл', TOAST_TITLE, { timeOut: 4000 });
+        return;
+    }
+    if (!response.ok) {
+        toastr.error(`NovelAI не ответил (${response.status})`, TOAST_TITLE, { timeOut: 4000 });
+        return;
+    }
+    naiDirectBlocked = false;
+    const data = await response.json().catch(() => ({}));
+    sdwLog('INFO', 'Подписка NovelAI:', data);
+    naiCharge = Number.isFinite(data?.usage?.percent) ? data.usage.percent : null;
+    renderCharge();
+    const tier = NAI_TIERS[data?.tier] || `уровень ${data?.tier ?? '?'}`;
+    const charge = Number.isFinite(data?.usage?.percent) ? `, заряд V5: ${data.usage.percent}%` : '';
+    toastr.success(`Ключ рабочий, ${tier}${charge}`, TOAST_TITLE, { timeOut: 4000 });
+}
+
+// ─── zip из ответа ───────────────────────────────────────────────────────
+
+/** Достаёт первый .png из zip. Поддерживает хранение без сжатия и deflate. */
+async function extractPngFromZip(buffer) {
+    const bytes = new Uint8Array(buffer);
+    const view = new DataView(buffer);
+
+    // Конец центрального каталога ищем с конца файла.
+    let eocd = -1;
+    for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
+        if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error('ответ NovelAI — не zip');
+
+    const count = view.getUint16(eocd + 10, true);
+    let ptr = view.getUint32(eocd + 16, true);
+    const decoder = new TextDecoder();
+
+    for (let n = 0; n < count; n++) {
+        if (view.getUint32(ptr, true) !== 0x02014b50) break;
+        const method = view.getUint16(ptr + 10, true);
+        const compressedSize = view.getUint32(ptr + 20, true);
+        const nameLength = view.getUint16(ptr + 28, true);
+        const extraLength = view.getUint16(ptr + 30, true);
+        const commentLength = view.getUint16(ptr + 32, true);
+        const localOffset = view.getUint32(ptr + 42, true);
+        const name = decoder.decode(bytes.subarray(ptr + 46, ptr + 46 + nameLength));
+        ptr += 46 + nameLength + extraLength + commentLength;
+        if (!/\.png$/i.test(name)) continue;
+
+        const localNameLength = view.getUint16(localOffset + 26, true);
+        const localExtraLength = view.getUint16(localOffset + 28, true);
+        const start = localOffset + 30 + localNameLength + localExtraLength;
+        const data = bytes.subarray(start, start + compressedSize);
+
+        if (method === 0) return data;
+        if (method === 8) {
+            const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+            return new Uint8Array(await new Response(stream).arrayBuffer());
+        }
+        throw new Error(`неизвестное сжатие в zip (${method})`);
+    }
+    throw new Error('в ответе NovelAI нет картинки');
+}
+
+function bytesToDataUrl(bytes) {
+    let binary = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return `data:image/png;base64,${btoa(binary)}`;
+}
+
+// ─── Запрос ──────────────────────────────────────────────────────────────
+
+function naiError(message, status) {
+    const error = new Error(message);
+    error.status = status;
+    return error;
+}
+
+/** Прямой запрос в NovelAI с раздельными персонажами. */
+async function requestNovelAiDirect({ base, chars, negative, model, width, height, seed }, signal) {
+    const center = { x: 0.5, y: 0.5 };
+    const parameters = {
+        params_version: 4,
+        width, height,
+        scale: 5,
+        sampler: 'k_euler_ancestral',
+        steps: 28,
+        seed,
+        n_samples: 1,
+        ucPreset: 3,
+        qualityToggle: false,
+        sm: false,
+        sm_dyn: false,
+        dynamic_thresholding: false,
+        controlnet_strength: 1,
+        legacy: false,
+        add_original_image: false,
+        cfg_rescale: 0,
+        noise_schedule: 'karras',
+        legacy_v3_extend: false,
+        uncond_scale: 1,
+        negative_prompt: negative,
+        prompt: base,
+        reference_image_multiple: [],
+        reference_information_extracted_multiple: [],
+        reference_strength_multiple: [],
+        extra_noise_seed: seed,
+        characterPrompts: chars.map(c => ({ prompt: c, uc: '', center, enabled: true })),
+        v4_prompt: {
+            use_coords: false,
+            use_order: true,
+            caption: { base_caption: base, char_captions: chars.map(c => ({ char_caption: c, centers: [center] })) },
+        },
+        v4_negative_prompt: {
+            use_coords: false,
+            use_order: false,
+            caption: { base_caption: negative, char_captions: chars.map(() => ({ char_caption: '', centers: [center] })) },
+        },
+    };
+
+    const response = await fetch(`${NAI_HOST}/ai/generate-image`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${String(getSettings().naiKey || '').trim()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: base, model, action: 'generate', parameters }),
+        signal,
+    });
+    if (!response.ok) {
+        const text = await response.text().catch(() => '');
+        if (response.status === 401) throw naiError('ключ не подошёл', 401);
+        if (response.status === 429) throw naiError('NovelAI просит подождать', 429);
+        throw naiError(`${response.status}${text ? `: ${text.slice(0, 160)}` : ''}`, response.status);
+    }
+    const png = await extractPngFromZip(await response.arrayBuffer());
+    return bytesToDataUrl(png);
+}
+
+/** Через прокси таверны: ключ из Подключений к API, персонажи склеиваются в строку. */
+async function requestNovelAiViaTavern({ base, chars, negative, model, width, height, seed }, signal) {
+    const prompt = [base, ...chars].filter(Boolean).join(', ');
+    const response = await fetch('/api/novelai/generate-image', {
+        method: 'POST',
+        headers: getContext().getRequestHeaders(),
+        body: JSON.stringify({
+            prompt,
+            negative_prompt: negative,
+            model,
+            width,
+            height,
+            steps: 28,
+            scale: 5,
+            sampler: 'k_euler_ancestral',
+            scheduler: 'karras',
+            seed,
+        }),
+        signal,
+    });
+    if (!response.ok) {
+        throw naiError(`таверна вернула ${response.status} — проверь ключ в Подключениях к API → NovelAI`, response.status);
+    }
+    const base64 = (await response.text()).trim();
+    if (!base64) throw naiError('таверна вернула пустой ответ');
+    return `data:image/png;base64,${base64}`;
+}
+
+let naiFallbackAnnounced = false;
+
+/** Рисует через NovelAI: напрямую, а если браузер не пустили — через таверну. */
+async function requestNovelAi(params, signal) {
+    if (!naiDirectBlocked) {
+        try {
+            return { dataUrl: await requestNovelAiDirect(params, signal), route: 'direct' };
+        } catch (error) {
+            // TypeError у fetch — это CORS или сеть. Остальное — ответ самого NovelAI.
+            if (error?.name !== 'TypeError') throw error;
+            sdwLog('WARN', 'Прямой запрос в NovelAI не прошёл, иду через таверну:', error);
+            naiDirectBlocked = true;
+        }
+    }
+    if (!naiFallbackAnnounced) {
+        naiFallbackAnnounced = true;
+        toastr.warning('NovelAI не пускает запросы из браузера — буду рисовать через таверну, без раздельных персонажей. Положи ключ ещё и в Подключения к API → NovelAI', TOAST_TITLE, { timeOut: 9000 });
+    }
+    return { dataUrl: await requestNovelAiViaTavern(params, signal), route: 'tavern' };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // Окно
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -1194,6 +1797,7 @@ function buildWindow() {
         <div id="sdw_window" class="sdw-window" hidden>
             <div class="sdw-head" id="sdw_head">
                 <span class="sdw-title">#<span id="sdw_msg_no">—</span></span>
+                <button type="button" class="sdw-charge" id="sdw_charge" title="Заряд V5 на Opus. Клик — обновить" hidden></button>
                 <label class="sdw-auto" title="Авто в этом чате">
                     <input type="checkbox" id="sdw_win_auto">
                     <span>Авто</span>
@@ -1222,10 +1826,15 @@ function buildWindow() {
                             <button type="button" class="sdw-btn" id="sdw_btn_edit_cancel">Отмена</button>
                         </div>
                     </div>
-                    <div class="sdw-style-row" id="sdw_style_row">
+                    <div class="sdw-style-row" id="sdw_preset_row">
+                        <label for="sdw_win_preset" class="sdw-style-label">Пресет</label>
+                        <select id="sdw_win_preset" class="text_pole sdw-style-select"></select>
+                    </div>
+                    <div class="sdw-style-row sdw-style-row-tight" id="sdw_style_row">
                         <label for="sdw_style" class="sdw-style-label">Стиль</label>
                         <select id="sdw_style" class="text_pole sdw-style-select"></select>
                     </div>
+                    <input type="text" id="sdw_wish" class="text_pole sdw-wish" placeholder="💬 Пожелание: например, крупно лица, он смеётся, вид сверху" autocomplete="off">
                     <div class="sdw-actions" id="sdw_actions_main">
                         <button type="button" class="sdw-btn" id="sdw_btn_reprompt">✏️ Новый промпт</button>
                         <button type="button" class="sdw-btn" id="sdw_btn_draw">🎨 Нарисовать</button>
@@ -1242,6 +1851,8 @@ function buildWindow() {
         refreshChatControls();
     });
 
+    document.getElementById('sdw_charge').addEventListener('click', () => refreshNaiCharge());
+
     document.getElementById('sdw_btn_tags').addEventListener('click', () => {
         state.tagsOpen = !state.tagsOpen;
         if (state.tagsOpen && getSettings().window.collapsed) setCollapsed(false);
@@ -1252,10 +1863,20 @@ function buildWindow() {
         setCollapsed(!getSettings().window.collapsed);
     });
 
-    document.getElementById('sdw_btn_reprompt').addEventListener('click', () => {
+    const repromptWithWish = () => {
         const id = state.viewMessageId;
         if (id === null || !getContext().chat?.[id]) return;
-        runPrompt(id);
+        const wishInput = document.getElementById('sdw_wish');
+        const wish = wishInput.value;
+        // Пожелание разовое: очищаем, чтобы не уехало на следующий пост.
+        wishInput.value = '';
+        runPrompt(id, { wish });
+    };
+    document.getElementById('sdw_btn_reprompt').addEventListener('click', repromptWithWish);
+    document.getElementById('sdw_wish').addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || e.isComposing) return;
+        e.preventDefault();
+        if (!document.getElementById('sdw_btn_reprompt').disabled) repromptWithWish();
     });
 
     document.getElementById('sdw_btn_draw').addEventListener('click', () => {
@@ -1268,6 +1889,12 @@ function buildWindow() {
         getSettings().window.promptOpen = !getSettings().window.promptOpen;
         saveSettings();
         renderWindow();
+    });
+
+    document.getElementById('sdw_win_preset').addEventListener('change', (e) => {
+        getSettings().activePresetId = e.target.value;
+        saveSettings();
+        refreshPresetSelect();
     });
 
     document.getElementById('sdw_style').addEventListener('change', (e) => {
@@ -1503,6 +2130,7 @@ function renderWindow({ rebuildTags = false } = {}) {
 
     ensureViewValid();
     document.getElementById('sdw_msg_no').textContent = state.viewMessageId ?? '—';
+    renderCharge();
 
     if (state.tagsOpen) {
         const panel = document.getElementById('sdw_view_tags');
@@ -1527,6 +2155,7 @@ function renderMainView() {
     const editBtn = $('sdw_btn_edit');
 
     refreshStyleSelect();
+    refreshPresetSelect();
 
     const message = getContext().chat?.[state.viewMessageId];
     if (!message) {
@@ -1538,10 +2167,14 @@ function renderMainView() {
         promptBlock.hidden = true;
         $('sdw_actions_main').hidden = true;
         $('sdw_style_row').hidden = true;
+        $('sdw_preset_row').hidden = true;
+        $('sdw_wish').hidden = true;
         return;
     }
     $('sdw_actions_main').hidden = false;
     $('sdw_style_row').hidden = false;
+    $('sdw_preset_row').hidden = false;
+    $('sdw_wish').hidden = false;
 
     const data = readSwipeData(message);
     const key = getSwipeKey(message, getCurrentSwipeIdx(message));
@@ -1561,7 +2194,7 @@ function renderMainView() {
     else if (status === 'cancelled' && !data?.prompt) statusHtml = 'Отменено.';
     else if (!data?.prompt) statusHtml = 'Для этого свайпа промпта ещё нет.';
     else if (drawStatus === 'drawing') statusHtml = 'Рисование прервано. Жми 🎨';
-    else if (drawStatus === 'error') statusHtml = escapeHtml(`Наистера не ответила${data.drawError ? ` (${String(data.drawError).slice(0, 120)})` : ''}.`);
+    else if (drawStatus === 'error') statusHtml = escapeHtml(`${data.drawProvider === 'novelai' ? 'NovelAI не ответил' : 'Наистера не ответила'}${data.drawError ? ` (${String(data.drawError).slice(0, 120)})` : ''}.`);
     else if (drawStatus === 'cancelled' || status === 'cancelled') statusHtml = 'Отменено.';
     statusEl.innerHTML = statusHtml;
     statusEl.hidden = !statusHtml;
@@ -1593,7 +2226,12 @@ function renderMainView() {
     if (hasPrompt && data.aspect) meta.push(`рамка: ${data.aspect}`);
     if (hasPrompt && data.presetName) meta.push(`пресет: ${data.presetName}`);
     if (hasPrompt && data.edited) meta.push('правлено вручную');
-    if (image) meta.push(`картинка: ${image.ratio}${image.styleName ? `, ${image.styleName}` : ''}`);
+    if (hasPrompt && data.wish) meta.push(`пожелание: ${data.wish}`);
+    if (image) {
+        const model = image.provider === 'novelai' ? `, ${getNaiModelLabel(image.model)}` : '';
+        meta.push(`картинка: ${image.ratio}${model}${image.styleName ? `, ${image.styleName}` : ''}`);
+        if (image.stopCut) meta.push(`вырезано стоп-словами: ${image.stopCut}`);
+    }
     metaEl.textContent = meta.join(' · ');
     metaEl.hidden = !meta.length;
 
@@ -1935,13 +2573,21 @@ function newPresetId(base = 'preset') {
     return sdwUniquePresetId(getSettings().presets, base);
 }
 
+/** Выпадашки пресета в настройках и в окне — один и тот же выбор. */
 function refreshPresetSelect() {
-    const select = document.getElementById('sdw_preset');
-    if (!select) return;
     const settings = getSettings();
-    select.innerHTML = settings.presets
-        .map(p => `<option value="${escapeHtml(p.id)}" ${p.id === settings.activePresetId ? 'selected' : ''}>${escapeHtml(p.name)}</option>`)
+    const html = settings.presets
+        .map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)}</option>`)
         .join('');
+    for (const id of ['sdw_preset', 'sdw_win_preset']) {
+        const select = document.getElementById(id);
+        if (!select) continue;
+        if (select.dataset.html !== html) {
+            select.innerHTML = html;
+            select.dataset.html = html;
+        }
+        select.value = settings.activePresetId;
+    }
 }
 
 function openPresetManager() {
@@ -2295,31 +2941,60 @@ function buildSettingsPanel() {
                         <div class="sdw-hint">Макросы таверны работают.</div>
                     </div>
 
-                    <div class="sdw-group-title">NovelAI через наистеру</div>
+                    <div class="sdw-group-title">Генерация</div>
 
-                    <label for="sdw_nai_key" class="sdw-label">Ключ наистеры</label>
-                    <input type="password" id="sdw_nai_key" class="text_pole" autocomplete="off" value="${escapeHtml(settings.naisteraKey)}">
+                    <label for="sdw_provider" class="sdw-label">Провайдер</label>
+                    <select id="sdw_provider" class="text_pole">
+                        <option value="naistera" ${settings.provider !== 'novelai' ? 'selected' : ''}>Наистера</option>
+                        <option value="novelai" ${settings.provider === 'novelai' ? 'selected' : ''}>NovelAI (подписка)</option>
+                    </select>
 
-                    <label for="sdw_nai_endpoint" class="sdw-label">Endpoint URL</label>
-                    <input type="text" id="sdw_nai_endpoint" class="text_pole" placeholder="https://naistera.org" value="${escapeHtml(settings.naisteraEndpoint)}">
-                    <div class="sdw-hint">Пусто — https://naistera.org</div>
+                    <div id="sdw_prov_novelai" class="sdw-subsection" ${settings.provider === 'novelai' ? '' : 'hidden'}>
+                        <label for="sdw_nai_token" class="sdw-label">Ключ NovelAI</label>
+                        <input type="password" id="sdw_nai_token" class="text_pole" autocomplete="off" value="${escapeHtml(settings.naiKey)}">
+                        <div class="sdw-hint">Persistent API Token из настроек аккаунта NovelAI, начинается с pst-</div>
 
-                    <div class="menu_button menu_button_icon" id="sdw_nai_check" style="margin-top: 6px;">
-                        <i class="fa-solid fa-key"></i>
-                        <span>Проверить ключ</span>
+                        <label for="sdw_nai_model" class="sdw-label">Модель</label>
+                        <select id="sdw_nai_model" class="text_pole">
+                            ${NAI_MODELS.map(m => `<option value="${m.id}" ${settings.naiModel === m.id ? 'selected' : ''}>${m.label}</option>`).join('')}
+                        </select>
+                        <div class="sdw-hint">Размеры только бесплатные для Opus: 1216×832, 832×1216, 1024×1024.</div>
+
+                        <div class="menu_button menu_button_icon" id="sdw_nai_token_check" style="margin-top: 6px;">
+                            <i class="fa-solid fa-key"></i>
+                            <span>Проверить ключ</span>
+                        </div>
+                    </div>
+
+                    <div id="sdw_prov_naistera" class="sdw-subsection" ${settings.provider === 'novelai' ? 'hidden' : ''}>
+                        <label for="sdw_nai_key" class="sdw-label">Ключ наистеры</label>
+                        <input type="password" id="sdw_nai_key" class="text_pole" autocomplete="off" value="${escapeHtml(settings.naisteraKey)}">
+
+                        <label for="sdw_nai_endpoint" class="sdw-label">Endpoint URL</label>
+                        <input type="text" id="sdw_nai_endpoint" class="text_pole" placeholder="https://naistera.org" value="${escapeHtml(settings.naisteraEndpoint)}">
+                        <div class="sdw-hint">Пусто — https://naistera.org</div>
+
+                        <div class="menu_button menu_button_icon" id="sdw_nai_check" style="margin-top: 6px;">
+                            <i class="fa-solid fa-key"></i>
+                            <span>Проверить ключ</span>
+                        </div>
+
+                        <div class="sdw-label">Рамки</div>
+                        <div class="sdw-aspect-grid">
+                            ${ASPECTS.map(aspect => `
+                                <span>${ASPECT_LABELS[aspect]}</span>
+                                <select class="text_pole" data-aspect="${aspect}">
+                                    ${RATIO_CHOICES.map(r => `<option value="${r}" ${settings.aspectMap[aspect] === r ? 'selected' : ''}>${r}</option>`).join('')}
+                                </select>`).join('')}
+                        </div>
                     </div>
 
                     <label for="sdw_negative" class="sdw-label">Негативный промпт</label>
                     <textarea id="sdw_negative" class="text_pole sdw-jb-text" rows="3" spellcheck="false">${escapeHtml(settings.negativePrompt)}</textarea>
 
-                    <div class="sdw-label">Рамки</div>
-                    <div class="sdw-aspect-grid">
-                        ${ASPECTS.map(aspect => `
-                            <span>${ASPECT_LABELS[aspect]}</span>
-                            <select class="text_pole" data-aspect="${aspect}">
-                                ${RATIO_CHOICES.map(r => `<option value="${r}" ${settings.aspectMap[aspect] === r ? 'selected' : ''}>${r}</option>`).join('')}
-                            </select>`).join('')}
-                    </div>
+                    <label for="sdw_stop_words" class="sdw-label">Стоп-слова</label>
+                    <textarea id="sdw_stop_words" class="text_pole sdw-jb-text" rows="2" spellcheck="false">${escapeHtml(settings.stopWords)}</textarea>
+                    <div class="sdw-hint">Слова и фразы через запятую; кусок промпта, где они встречаются, вырезается перед отправкой.</div>
 
                     <label for="sdw_default_aspect" class="sdw-label">Рамка по умолчанию</label>
                     <select id="sdw_default_aspect" class="text_pole">
@@ -2378,6 +3053,7 @@ function buildSettingsPanel() {
     document.getElementById('sdw_preset').addEventListener('change', (e) => {
         getSettings().activePresetId = e.target.value;
         saveSettings();
+        refreshPresetSelect();
     });
 
     document.getElementById('sdw_manage_presets').addEventListener('click', openPresetManager);
@@ -2411,6 +3087,30 @@ function buildSettingsPanel() {
         saveSettings();
     });
 
+    document.getElementById('sdw_provider').addEventListener('change', (e) => {
+        const value = e.target.value === 'novelai' ? 'novelai' : 'naistera';
+        getSettings().provider = value;
+        document.getElementById('sdw_prov_novelai').hidden = value !== 'novelai';
+        document.getElementById('sdw_prov_naistera').hidden = value === 'novelai';
+        saveSettings();
+        refreshNaiCharge();
+    });
+
+    document.getElementById('sdw_nai_token').addEventListener('change', (e) => {
+        getSettings().naiKey = String(e.target.value || '').trim();
+        saveSettings();
+        naiDirectBlocked = false;
+        refreshNaiCharge();
+    });
+
+    document.getElementById('sdw_nai_model').addEventListener('change', (e) => {
+        getSettings().naiModel = e.target.value;
+        saveSettings();
+        refreshNaiCharge();
+    });
+
+    document.getElementById('sdw_nai_token_check').addEventListener('click', checkNovelAiKey);
+
     document.getElementById('sdw_nai_key').addEventListener('change', (e) => {
         getSettings().naisteraKey = String(e.target.value || '').trim();
         saveSettings();
@@ -2422,6 +3122,11 @@ function buildSettingsPanel() {
     });
 
     document.getElementById('sdw_nai_check').addEventListener('click', checkNaisteraKey);
+
+    document.getElementById('sdw_stop_words').addEventListener('change', (e) => {
+        getSettings().stopWords = e.target.value;
+        saveSettings();
+    });
 
     document.getElementById('sdw_negative').addEventListener('change', (e) => {
         getSettings().negativePrompt = e.target.value;
@@ -2654,5 +3359,6 @@ jQuery(async () => {
     refreshChatControls();
     renderWindow();
     setTimeout(() => { followScroll(); deliverMailbox(); }, 400);
+    setTimeout(refreshNaiCharge, 1000);
     sdwLog('INFO', 'Загружено');
 });
