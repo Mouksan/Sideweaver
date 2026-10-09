@@ -1813,7 +1813,10 @@ function buildWindow() {
                     <div class="sdw-image-wrap" id="sdw_image_wrap" hidden>
                         <img class="sdw-image" id="sdw_image" alt="" title="Открыть в полный размер">
                     </div>
-                    <button type="button" class="sdw-prompt-toggle" id="sdw_prompt_toggle" hidden></button>
+                    <div class="sdw-prompt-head" id="sdw_prompt_head" hidden>
+                        <button type="button" class="sdw-prompt-toggle" id="sdw_prompt_toggle"></button>
+                        <button type="button" class="sdw-icon sdw-expand" id="sdw_btn_expand" title="Развернуть"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></button>
+                    </div>
                     <div class="sdw-prompt-block" id="sdw_prompt_block">
                         <div class="sdw-prompt" id="sdw_prompt"></div>
                         <textarea class="text_pole sdw-prompt-edit" id="sdw_prompt_edit" spellcheck="false" hidden></textarea>
@@ -1885,7 +1888,12 @@ function buildWindow() {
 
     document.getElementById('sdw_image').addEventListener('click', (e) => openLightbox(e.currentTarget.src));
 
+    document.getElementById('sdw_btn_expand').addEventListener('click', openPromptExpanded);
+
     document.getElementById('sdw_prompt_toggle').addEventListener('click', () => {
+        // Без картинки промпт виден всегда, сворачивать нечего.
+        const message = getContext().chat?.[state.viewMessageId];
+        if (!getSwipeImage(readSwipeData(message))) return;
         getSettings().window.promptOpen = !getSettings().window.promptOpen;
         saveSettings();
         renderWindow();
@@ -2029,6 +2037,93 @@ async function saveEditedPrompt() {
     followScroll();
 }
 
+// ─── Промпт в большом окне ───────────────────────────────────────────────
+
+/** Разделы « | » — отдельными абзацами, чтобы в длинном промпте не теряться. */
+function promptToSections(prompt) {
+    return String(prompt || '').split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean).join('\n\n');
+}
+
+/** Обратно в одну строку: абзацы склеиваются через « | », переносы внутри — в пробел. */
+function sectionsToPrompt(text) {
+    return String(text || '')
+        .split(/\n\s*\n/)
+        .map(part => part.replace(/[\r\n]+/g, ' ').replace(/[ \t\u00a0]{2,}/g, ' ').trim())
+        .filter(Boolean)
+        .join(' | ');
+}
+
+function openPromptExpanded() {
+    const messageId = state.viewMessageId;
+    const message = getContext().chat?.[messageId];
+    const data = readSwipeData(message);
+    if (!data?.prompt) return;
+
+    // Если в маленьком окне уже идёт правка — берём недописанное оттуда.
+    const target = state.editing && state.editTarget ? state.editTarget : makeTarget(messageId);
+    if (!target) return;
+    const source = state.editing
+        ? String(document.getElementById('sdw_prompt_edit').value || '')
+        : data.prompt;
+    const meta = document.getElementById('sdw_meta')?.textContent || '';
+
+    document.getElementById('sdw_expand_overlay')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'sdw_expand_overlay';
+    overlay.className = 'sdw-popup-ov';
+    overlay.innerHTML = `
+        <div class="sdw-popup sdw-expand-popup" role="dialog" aria-label="Промпт">
+            <div class="sdw-popup-head">
+                <div class="sdw-popup-title">⊹ Промпт #${escapeHtml(String(messageId))} ⊹</div>
+                <button class="sdw-popup-x" type="button" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="sdw-expand-body">
+                <textarea class="text_pole sdw-expand-text" spellcheck="false"></textarea>
+                ${meta ? `<div class="sdw-meta">${escapeHtml(meta)}</div>` : ''}
+            </div>
+            <div class="sdw-popup-btns">
+                <button class="sdw-pbtn primary" data-act="save">Сохранить</button>
+                <button class="sdw-pbtn" data-act="save-draw">Сохранить и перерисовать</button>
+                <button class="sdw-pbtn ghost" data-act="close">Отмена</button>
+            </div>
+        </div>`;
+    document.body.appendChild(overlay);
+
+    const textarea = overlay.querySelector('.sdw-expand-text');
+    textarea.value = promptToSections(source);
+
+    const close = () => {
+        overlay.remove();
+        document.removeEventListener('keydown', onKey, true);
+    };
+    const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
+    document.addEventListener('keydown', onKey, true);
+    overlay.querySelector('.sdw-popup-x').addEventListener('click', close);
+    overlay.querySelector('[data-act="close"]').addEventListener('click', close);
+    overlay.addEventListener('pointerdown', (e) => { if (e.target === overlay) close(); });
+
+    const save = async (andDraw) => {
+        const prompt = sectionsToPrompt(textarea.value);
+        if (!prompt) {
+            toastr.warning('Промпт пустой — нечего сохранять', TOAST_TITLE, { timeOut: 2500 });
+            return;
+        }
+        close();
+        // Правка в маленьком окне закрывается: сохранено уже здесь.
+        state.editing = false;
+        state.editTarget = null;
+        const result = await writeSwipeData(target, { status: 'prompt', prompt, edited: true, error: null });
+        if (andDraw && result === 'ok') runDraw(target);
+        followScroll();
+    };
+    overlay.querySelector('[data-act="save"]').addEventListener('click', () => save(false));
+    overlay.querySelector('[data-act="save-draw"]').addEventListener('click', () => save(true));
+
+    textarea.focus();
+    textarea.setSelectionRange(0, 0);
+    textarea.scrollTop = 0;
+}
+
 // ─── Окно едет за прокруткой чата ────────────────────────────────────────
 
 /**
@@ -2149,6 +2244,7 @@ function renderMainView() {
     const imageWrap = $('sdw_image_wrap');
     const imageEl = $('sdw_image');
     const toggleEl = $('sdw_prompt_toggle');
+    const headEl = $('sdw_prompt_head');
     const promptBlock = $('sdw_prompt_block');
     const repromptBtn = $('sdw_btn_reprompt');
     const drawBtn = $('sdw_btn_draw');
@@ -2163,7 +2259,7 @@ function renderMainView() {
         statusEl.textContent = 'В чате пока нет ответов модели.';
         statusEl.hidden = false;
         imageWrap.hidden = true;
-        toggleEl.hidden = true;
+        headEl.hidden = true;
         promptBlock.hidden = true;
         $('sdw_actions_main').hidden = true;
         $('sdw_style_row').hidden = true;
@@ -2212,8 +2308,9 @@ function renderMainView() {
     // Промпт: с картинкой сворачивается в строку, без неё виден всегда.
     const hasPrompt = !!data?.prompt;
     const open = !image || state.editing || !!getSettings().window.promptOpen;
-    toggleEl.hidden = !(image && hasPrompt);
-    toggleEl.textContent = open ? 'Промпт ▾' : 'Промпт ▸';
+    headEl.hidden = !hasPrompt;
+    toggleEl.textContent = !image ? 'Промпт' : (open ? 'Промпт ▾' : 'Промпт ▸');
+    toggleEl.classList.toggle('sdw-static', !image);
     promptBlock.hidden = !hasPrompt || !open;
 
     editEl.hidden = !state.editing;
