@@ -307,7 +307,7 @@ For conversation and close interaction, the "Main frame" should be a tight chest
 
 Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
 
-CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Pick the reaction from the current moment: smug, flustered, sulking, scheming, startled, lovestruck, panicking, and so on. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
+CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
 
 Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
 
@@ -405,7 +405,7 @@ For conversation and close interaction, the "Main frame" should be a tight chest
 
 Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
 
-CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Pick the reaction from the current moment: smug, flustered, sulking, scheming, startled, lovestruck, panicking, and so on. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
+CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
 
 Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
 
@@ -471,7 +471,7 @@ Before returning, silently check: the prompt is one line using ordinary spaces; 
 
 // Версия встроенных пресетов. Растёт, когда меняется текст встроенных
 // шаблонов: у тебя настройки уже сохранены, и без этого остался бы старый текст.
-const SEED_VERSION = 8;
+const SEED_VERSION = 9;
 
 // Встроенные пресеты прошлых версий. При обновлении убираются, если их
 // не правили (правленые копии — уже не встроенные и остаются).
@@ -918,10 +918,13 @@ function getPreviousPrompt(messageId) {
         if (!message || message.is_user || message.is_system) continue;
         const prompt = String(readSwipeData(message)?.prompt || '').trim();
         const cut = prompt.indexOf(' | ');
-        if (cut === -1) return { text: prompt, charactersOnly: false };
-        return { text: prompt.slice(cut + 3).trim(), charactersOnly: true };
+        if (cut === -1) return { text: prompt, charactersOnly: false, cast: '' };
+        // Из базы берём только подсчёт персонажей: без него модель гадает с полом.
+        const cast = [...prompt.slice(0, cut).matchAll(/(?<![\w])(\d+)\s*(boys?|girls?|others?)(?![\w])/gi)]
+            .map(m => `${m[1]}${m[2].toLowerCase()}`);
+        return { text: prompt.slice(cut + 3).trim(), charactersOnly: true, cast: [...new Set(cast)].join(', ') };
     }
-    return { text: '', charactersOnly: false };
+    return { text: '', charactersOnly: false, cast: '' };
 }
 
 function substitute(text) {
@@ -945,7 +948,9 @@ function buildPromptContext(messageId, wish = '') {
     if (previousPrompt.text && previousPrompt.charactersOnly) {
         sections.push(`PREVIOUS PROMPT (character sections only, continuity reference):
 Use it ONLY to keep clothing and character appearance consistent.
-Do NOT copy its poses, framing or panel placement. Choose composition and layout fresh from the current POST.
+Do NOT copy its poses, framing or panel placement. Choose composition and layout fresh from the current POST.${previousPrompt.cast ? `
+CAST (keep exactly): ${previousPrompt.cast}
+The sex of every character is fixed. Never change a character's sex or the gender counts unless the POST adds or removes a character.` : ''}
 ${previousPrompt.text}`);
     } else if (previousPrompt.text) {
         sections.push(`PREVIOUS PROMPT (continuity reference only):
