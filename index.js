@@ -307,7 +307,7 @@ For conversation and close interaction, the "Main frame" should be a tight chest
 
 Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
 
-CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
+CHIBI: Include a chibi reaction on most pages. Give it to ONE named character. The chibi is NOT a panel: it never gets its own frame and never counts toward the panel count. Place it as a free-standing figure at a page edge or corner, over a gutter or partly overlapping a panel edge. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
 
 Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
 
@@ -373,7 +373,7 @@ Do not provide artists, years, quality tags, linework or rendering instructions,
 
 Do not insert technical escape syntax into the prompt. Output no Markdown, explanations, or placeholder labels.
 
-Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; the layout is fresh, with every panel position and shape stated; the chibi belongs to one named character and stays in its own panel or at a page edge; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
+Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; the layout is fresh, with every panel position and shape stated; the chibi belongs to one named character, stands outside the panels and is not counted as one; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
 
 // «V5 — комикс (крупно)»: тот же комикс, но вместо икс-рея — крупный план снаружи.
 const NAI_V5_COMIC_FOCUS_INSTRUCTION = `Create a prompt for ONE comic page. Return only the two lines described in OUTPUT FORMAT. Describe the scene in English, while keeping the selected dialogue in its original Russian.
@@ -405,7 +405,7 @@ For conversation and close interaction, the "Main frame" should be a tight chest
 
 Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
 
-CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
+CHIBI: Include a chibi reaction on most pages. Give it to ONE named character. The chibi is NOT a panel: it never gets its own frame and never counts toward the panel count. Place it as a free-standing figure at a page edge or corner, over a gutter or partly overlapping a panel edge. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
 
 Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
 
@@ -467,11 +467,11 @@ Do not provide artists, years, quality tags, linework or rendering instructions,
 
 Do not insert technical escape syntax into the prompt. Output no Markdown, explanations, or placeholder labels.
 
-Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; the layout is fresh, with every panel position and shape stated; the chibi belongs to one named character and stays in its own panel or at a page edge; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
+Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; the layout is fresh, with every panel position and shape stated; the chibi belongs to one named character, stands outside the panels and is not counted as one; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
 
 // Версия встроенных пресетов. Растёт, когда меняется текст встроенных
 // шаблонов: у тебя настройки уже сохранены, и без этого остался бы старый текст.
-const SEED_VERSION = 9;
+const SEED_VERSION = 10;
 
 // Встроенные пресеты прошлых версий. При обновлении убираются, если их
 // не правили (правленые копии — уже не встроенные и остаются).
