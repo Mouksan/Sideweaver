@@ -301,13 +301,13 @@ BASE: PAGE AND ACTION
 
 Start with the gender counts for the distinct visible cast, followed by "comic" and the panel count. Add a brief factual description of the setting. Then describe the page layout and all panels in ordinary sentences. Names identify the cast here; full appearance and clothing descriptions belong in the individual character sections.
 
-Use ONE dominant "Main frame" and 1–3 smaller "Focus frame" panels. The "Main frame" occupies roughly two thirds of the page. "Focus frame" panels are compact insets or small adjacent panels, not an equal grid. Use narrow gutters and scene-filled outer edges. State the position of every panel clearly and consistently. Focus frames may contain chibi versions of characters doing something, interacting, reacting, or expressing the character's current mood.
+PAGE LAYOUT: Design a fresh, dynamic layout for every page and vary it from page to page; never fall back on one standard arrangement. Use 2–4 panels in total. One or two "Main frame" panels carry the key moment and take most of the page; the remaining "Focus frame" panels are smaller. Place the Main frame wherever it serves this moment best: top, bottom, left, right, or across the whole page. Panels do not have to be rectangles in a grid: use slanted or diagonal gutters, angled strips, trapezoid or triangular panels, tilted insets overlapping a larger panel, a tall vertical panel beside stacked smaller ones, or a borderless full-bleed Main frame with smaller panels floating over it. Characters may break out of panel borders and overlap the gutters. Use narrow gutters. State the position and shape of every panel clearly and consistently.
 
 For conversation and close interaction, the "Main frame" should be a tight chest-up two-shot, cropped around the chest or upper torso. Faces and the relevant interaction should fill most of the frame. With three or more participants, place additional speakers into separate close-up "Focus frame" panels rather than widening the "Main frame". Show close-ups of faces, expressions, hands, or already established physical contact. Choose every crop for its purpose; if an important action involves the lower body, use a localized detail panel for that action.
 
 Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
 
-A chibi reaction gag is welcome when it fits the already established mood. Localize it to ONE small "Focus frame" and to the named character only, preferably as a chibi face or bust. The "Main frame" must retain normal proportions. Do not add global chibi tags to the base scene or identity descriptions.
+CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Pick the reaction from the current moment: smug, flustered, sulking, scheming, startled, lovestruck, panicking, and so on. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
 
 Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
 
@@ -373,11 +373,105 @@ Do not provide artists, years, quality tags, linework or rendering instructions,
 
 Do not insert technical escape syntax into the prompt. Output no Markdown, explanations, or placeholder labels.
 
-Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; chibi is limited to its own panel; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
+Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; the layout is fresh, with every panel position and shape stated; the chibi belongs to one named character and stays in its own panel or at a page edge; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
+
+// «V5 — комикс (крупно)»: тот же комикс, но вместо икс-рея — крупный план снаружи.
+const NAI_V5_COMIC_FOCUS_INSTRUCTION = `Create a prompt for ONE comic page. Return only the two lines described in OUTPUT FORMAT. Describe the scene in English, while keeping the selected dialogue in its original Russian.
+
+OUTPUT FORMAT (strict): exactly two lines and nothing else. No roleplay text, no HTML, no markdown, no explanation.
+ASPECT: portrait | landscape | square
+PROMPT: the whole prompt on one line, in the structure described below.
+Do not write portrait, landscape or square inside PROMPT: the frame is set by the ASPECT line.
+
+${V5_SOURCES}
+
+SOURCE AND CONTINUITY
+
+Use the latest established RP moment. Profiles define appearance; the current RP defines actions, expressions, clothing, and the current state of that clothing. Preserve everything that is still valid within scene continuity.
+
+ONE INPUT FIELD, SEPARATE CHARACTER SECTIONS
+
+Write the generated prompt on ONE line. Separate the base scene from individual character sections with a plain vertical bar "|", surrounded by spaces. Structure: base scene and all panel descriptions | first character | second character. Each character section must contain that character's identity, visible appearance, current clothing, and panel-specific actions together. Use one section for each distinct visible character, including all repeat appearances of that same character within the same section. Panel descriptions remain in the base section; they do not create additional character sections.
+
+Use ordinary text, punctuation, and spaces. The prompt string must contain no backslashes, line breaks, tabs, control characters, escape sequences, or technical serialization instructions. Return only the two output lines.
+
+BASE: PAGE AND ACTION
+
+Start with the gender counts for the distinct visible cast, followed by "comic" and the panel count. Add a brief factual description of the setting. Then describe the page layout and all panels in ordinary sentences. Names identify the cast here; full appearance and clothing descriptions belong in the individual character sections.
+
+PAGE LAYOUT: Design a fresh, dynamic layout for every page and vary it from page to page; never fall back on one standard arrangement. Use 2–4 panels in total. One or two "Main frame" panels carry the key moment and take most of the page; the remaining "Focus frame" panels are smaller. Place the Main frame wherever it serves this moment best: top, bottom, left, right, or across the whole page. Panels do not have to be rectangles in a grid: use slanted or diagonal gutters, angled strips, trapezoid or triangular panels, tilted insets overlapping a larger panel, a tall vertical panel beside stacked smaller ones, or a borderless full-bleed Main frame with smaller panels floating over it. Characters may break out of panel borders and overlap the gutters. Use narrow gutters. State the position and shape of every panel clearly and consistently.
+
+For conversation and close interaction, the "Main frame" should be a tight chest-up two-shot, cropped around the chest or upper torso. Faces and the relevant interaction should fill most of the frame. With three or more participants, place additional speakers into separate close-up "Focus frame" panels rather than widening the "Main frame". Show close-ups of faces, expressions, hands, or already established physical contact. Choose every crop for its purpose; if an important action involves the lower body, use a localized detail panel for that action.
+
+Describe only what is actually visible inside the selected crop. If only the upper half of the body is visible, do not describe lower-body clothing. Do not list a complete outfit and then request a portrait crop. Background objects should remain partial and secondary. For normal conversation, avoid "full body", "long shot", and "wide shot". Do not paste these forbidden terms into the positive image prompt as a negative list.
+
+CHIBI: Include a chibi reaction on most pages. Give it to ONE named character, either inside a small "Focus frame" or as a free-standing full-body chibi placed outside the panels at a page edge or corner. Pick the reaction from the current moment: smug, flustered, sulking, scheming, startled, lovestruck, panicking, and so on. Every other appearance of that character keeps normal adult proportions. Do not add global chibi tags to the base scene or identity descriptions.
+
+Inside every panel, state who appears, their left or right position, expression, gaze direction, and already established action. Bind physical contact to the named participants and the relevant body part. Matching detail panels must preserve the same contact and clothing state.
+
+Characters must behave visually as though no viewer, camera, photographer, or audience exists. They live inside the scene and must direct their attention only toward another character, an object, an event, or another meaningful point within the scene. Never describe a character as looking at the viewer, looking into the camera, facing the audience, making eye contact with the viewer, posing for the camera, acknowledging the camera, or breaking the fourth wall unless the RP explicitly establishes that exact behavior. Do not use viewer-facing eye contact as a neutral default. Even when a face is shown frontally, the eyes must still be directed toward an in-scene person or object rather than outward toward the viewer. For every visible character, give a scene-internal gaze target whenever practical. Treat the viewer as completely nonexistent from the characters' perspective.
+
+CHARACTER SECTIONS: IDENTITY AND CLOTHING
+
+After all base descriptions, append the character sections. Order them by first appearance in page reading order. Start each section with "boy", "girl", or "other" without a number, followed by the character identity. Keep that character's appearance, visible clothing, expression, and panel-specific placement or action inside THIS section. Never place several different people inside one character section. A partner's name may be used to identify an interaction, but do not import the partner's appearance or clothing into that section.
+
+For a fandom character, use the recognized character tag when confidently known and the source or series tag, followed by a compact set of identifying visual traits and CURRENT visible clothing. If the exact tag is unknown, use the full canonical name and source title in clear English rather than inventing a tag spelling. A canonical name is an identity anchor, not a reason to erase the established RP outfit or change the external drawing style.
+
+For an original character, the name is only a reference label. Explicitly describe sex or presentation, face, eyes, hair, distinctive anatomy, and current visible clothing. Do not assume the model knows the name or can see profile images. Do not assign an OC a fandom character tag merely because they look similar.
+
+For every character, describe the identifying details that are actually visible across the selected panels. Repeat compact identity information on EVERY newly generated page. Within one page, use the same name and stable attributes across both normal and chibi appearances. Do not borrow another character's palette, hairstyle, accessories, or clothing motifs. Express required features positively rather than listing another character's unwanted features in the positive prompt.
+
+ACTION TAGS
+
+- Action Tags go inside the character sections, written literally as "source#", "target#" or "mutual#", never with names:
+  one character gets "source#hug", the other gets "target#hug" (the same action word on both sides);
+  for a shared action both get "mutual#kiss".
+- Action Tags are only for physical contact. Offering an object, gestures without touch, and gaze need no Action Tags: describe them in plain words inside the character section.
+- Do not deliberate over Action Tags: if unsure, skip them and describe the interaction in one short sentence.
+
+After identity and clothing, briefly state which "Main frame" or "Focus frame" panels show that character, together with the relevant position, expression, gaze target, and action. This reinforces panel ownership without reprinting the entire layout. A repeated appearance of the same character does not create another identity section.
+
+Every character section must preserve the same scene-internal gaze logic as the base description. Characters must not look toward the viewer or camera. Their eyes and attention must remain anchored to another character, an object, or an event within the scene, as if no external observer exists.
+
+EXPRESSIONS
+
+Facial expressions must stay readable and natural. Describe eyes only by color and gaze direction; never describe pupils, eye rims or eye glow. Avoid feral, crazed or distorted faces unless the POST makes that expression the point of the scene.
+
+DIALOGUE AND TEXT
+
+Use no more than three short verbatim Russian lines already spoken in the current moment, with no more than one speech bubble per speaker. Preserve profanity. Select a complete short line or a self-contained excerpt rather than inventing or paraphrasing dialogue. A silent panel needs no text. Speech bubbles must not cover faces or identifying features.
+
+In the base panel description, name the visible speaker, identify the speech bubble and its tail, and place the exact printed line inside Russian guillemets: "NAME has a speech bubble saying «Реплика», with the tail pointing to NAME." Thoughts are allowed only when established internal speech exists and must use a thought bubble.
+
+At the very end of that speaker's OWN character section, add "Text:" followed by the same single line without quotation marks. Nothing else may follow it inside that character section. The next character begins after the plain vertical bar "|". Silent characters have no "Text:" entry. Do not add a global transcription, a second copy of the same bubble, or instructions for separating multiple lines. All content stays on one line with ordinary spaces. Keep each dialogue line to no more than 8 words.
+
+NSFW AND EXPLICIT ADULT SEXUAL CONTENT
+
+- Apply this section only when the established RP moment explicitly contains sexual activity. Do not infer sexual activity merely from romance, nudity, or physical closeness.
+- Preserve the already established level of explicitness. Do not sanitize an established sexual act and do not escalate beyond what is already occurring.
+- Use direct clinical Danbooru terminology. Do not use metaphors, romantic abstractions, euphemisms, poetic phrasing, or emotional embellishment in sexual descriptions.
+- When applicable, state the exact established sexual act using standard terms: "missionary", "doggystyle", "cowgirl position", "oral", "fellatio", "cunnilingus", "anal", "vaginal", "fingering", "handjob", "penetration".
+- Specify visible anatomical state and fluids whenever already established and visible: "erect penis", "flaccid penis", "cum", "precum", "covered in cum", "sweating", "heavy breathing", "flushed face", "saliva trail".
+- Map sexual contact precisely with named participants and exact body contact. Examples of the required precision include: "penis in vagina", "penis in mouth", "penis rubbing against ass", "hand on penis". Use only the contact already established in the RP.
+- Describe clothing state mechanically and precisely for every relevant participant: "naked", "partially undressed", "clothes pulled down", "shirt lifted", "bottomless", or another directly established state.
+- Keep anatomy, clothing state, pose, penetration, and contact ownership inside the relevant named "Main frame" or "Focus frame" description.
+- Use a dedicated close-up "Focus frame" when an established sexual contact point would otherwise be too small or ambiguous.
+- When there is nudity or established sexual activity, the page MUST include a localized "Focus frame" showing the extreme close-ups of the explicit body parts (cock, vagina, ass hole) and the sexual act (for example, view of the penetration)
+- Preserve established anatomy, fluids, clothing displacement, penetration, and contact consistently between the main frame and the close-up.
+- Explicit scenes do not automatically become POV. The viewer still does not exist from the characters' perspective. Characters must not look toward the viewer, camera, or imagined audience during explicit scenes unless such behavior is explicitly established in the RP itself.
+- Dialogue rules remain unchanged in explicit scenes.
+
+EXTERNAL STYLE
+
+Do not provide artists, years, quality tags, linework or rendering instructions, or a palette. The separately configured style controls all panels. Use only brief factual lighting when relevant. Comic layout and localized chibi proportions are content and composition instructions.
+
+Do not insert technical escape syntax into the prompt. Output no Markdown, explanations, or placeholder labels.
+
+Before returning, silently check: the prompt is one line using ordinary spaces; plain vertical bars appear only between the base section and character sections; there is one section per person; necessary appearance and current clothing are assigned to the correct owners; crops remain tight; panel positions and contact remain consistent; the layout is fresh, with every panel position and shape stated; the chibi belongs to one named character and stays in its own panel or at a page edge; every visible character has a scene-internal gaze target and does not look at the viewer or camera; every speaker has one matching line and "Text:" ends only that speaker's section; the output is exactly the two lines ASPECT and PROMPT.`;
 
 // Версия встроенных пресетов. Растёт, когда меняется текст встроенных
 // шаблонов: у тебя настройки уже сохранены, и без этого остался бы старый текст.
-const SEED_VERSION = 7;
+const SEED_VERSION = 8;
 
 // Встроенные пресеты прошлых версий. При обновлении убираются, если их
 // не правили (правленые копии — уже не встроенные и остаются).
@@ -443,6 +537,7 @@ const defaultSettings = Object.freeze({
         { id: 'nai', name: 'NovelAI', builtIn: true, instruction: NAI_INSTRUCTION },
         { id: 'nai-v5-frame', name: 'V5 — кадр', builtIn: true, instruction: NAI_V5_FRAME_INSTRUCTION },
         { id: 'nai-v5-comic', name: 'V5 — комикс', builtIn: true, instruction: NAI_V5_COMIC_INSTRUCTION },
+        { id: 'nai-v5-comic-focus', name: 'V5 — комикс (крупно)', builtIn: true, instruction: NAI_V5_COMIC_FOCUS_INSTRUCTION },
     ],
 });
 
@@ -810,15 +905,23 @@ function getFixedTagLines() {
     return lines;
 }
 
-/** Промпт Sideweaver у предыдущего ответа модели — для непрерывности. */
+/**
+ * Промпт Sideweaver у предыдущего ответа модели — для непрерывности.
+ * Отдаём только секции персонажей (после первого « | »): там внешность и
+ * одежда, а раскладка панелей живёт в базовой части — её модель иначе копирует.
+ * Без « | » (промпт без секций) — целиком.
+ */
 function getPreviousPrompt(messageId) {
     const chat = getContext().chat || [];
     for (let i = messageId - 1; i >= 0; i--) {
         const message = chat[i];
         if (!message || message.is_user || message.is_system) continue;
-        return String(readSwipeData(message)?.prompt || '').trim();
+        const prompt = String(readSwipeData(message)?.prompt || '').trim();
+        const cut = prompt.indexOf(' | ');
+        if (cut === -1) return { text: prompt, charactersOnly: false };
+        return { text: prompt.slice(cut + 3).trim(), charactersOnly: true };
     }
-    return '';
+    return { text: '', charactersOnly: false };
 }
 
 function substitute(text) {
@@ -839,12 +942,17 @@ function buildPromptContext(messageId, wish = '') {
     const sections = [];
     if (card) sections.push(`CHARACTER CARD:\n${card}`);
     if (persona) sections.push(`USER PERSONA (${context.name1}):\n${persona}`);
-    if (previousPrompt) {
+    if (previousPrompt.text && previousPrompt.charactersOnly) {
+        sections.push(`PREVIOUS PROMPT (character sections only, continuity reference):
+Use it ONLY to keep clothing and character appearance consistent.
+Do NOT copy its poses, framing or panel placement. Choose composition and layout fresh from the current POST.
+${previousPrompt.text}`);
+    } else if (previousPrompt.text) {
         sections.push(`PREVIOUS PROMPT (continuity reference only):
 Use it ONLY to keep clothing, location and character appearance consistent.
 Do NOT copy its composition, framing, camera angle, pose or panel layout.
 Choose these fresh from the current POST.
-${previousPrompt}`);
+${previousPrompt.text}`);
     }
     if (fixed.length) {
         sections.push(`FIXED APPEARANCE TAGS (include verbatim in this character block):\n${fixed.join('\n')}`);
